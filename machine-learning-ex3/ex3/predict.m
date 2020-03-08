@@ -6,10 +6,11 @@ function p = predict(Theta1, Theta2, X)
 % Useful values
 m = size(X, 1);
 num_labels = size(Theta2, 1);
-
+X = [ones(m, 1) X];
 % You need to return the following variables correctly 
 p = zeros(size(X, 1), 1);
-
+Theta1
+Theta2
 % ====================== YOUR CODE HERE ======================
 % Instructions: Complete the following code to make predictions using
 %               your learned neural network. You should set p to a 
@@ -20,13 +21,25 @@ p = zeros(size(X, 1), 1);
 %       information see 'help max'. If your examples are in rows, then, you
 %       can use max(A, [], 2) to obtain the max for each row.
 %
-for i=1:m
-  if transpose(theta)*tranpose(X)  
+a =[];
+for j=1:m
+    value = [];
+    for i=1:num_labels
+      value = [value sigmoid(Theta1(i,:)*transpose(X(j,:)))];
+    end
+    a = [a ;value];
+ end
+k = size(a, 1);
+a = [ones(k, 1) a];
+value = [1 value];
+for j=1:k
+  value2 = [];
+  for i=1:num_labels
+      value2 = [value2 sigmoid(Theta2(i,:)*transpose(a(j,:)))];
+  end
+  [number, position] = max(value2);
+  p(j) = position;
 end
-
-
-
-
 
 
 

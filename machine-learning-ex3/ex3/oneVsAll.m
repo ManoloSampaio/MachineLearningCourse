@@ -6,17 +6,14 @@ function [all_theta] = oneVsAll(X, y, num_labels, lambda)
 %   logistic regression classifiers and returns each of these classifiers
 %   in a matrix all_theta, where the i-th row of all_theta corresponds 
 %   to the classifier for label i
-
-% Some useful variables
+% Some useful variables.
 m = size(X, 1);
 n = size(X, 2);
-
-% You need to return the following variables correctly 
+% You need to return the following variables correctly.
 all_theta = zeros(num_labels, n + 1);
-
-% Add ones to the X data matrix
+all_theta;
+% Add ones to the X data matrix.
 X = [ones(m, 1) X];
-
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the following code to train num_labels
 %               logistic regression classifiers with regularization
@@ -38,7 +35,7 @@ X = [ones(m, 1) X];
 %
 %     % Set Initial theta
 %     initial_theta = zeros(n + 1, 1);
-%     
+%      options = optimset('GradObj', 'on', 'MaxIter', 20);
 %     % Set options for fminunc
 %     options = optimset('GradObj', 'on', 'MaxIter', 50);
 % 
@@ -48,10 +45,13 @@ X = [ones(m, 1) X];
 %         fmincg (@(t)(lrCostFunction(t, X, (y == c), lambda)), ...
 %                 initial_theta, options);
 %
+initial_theta = zeros(n + 1, 1);
+options = optimset('GradObj', 'on', 'MaxIter', 50);
 
-
-
-
+for c = 1:num_labels
+  theta = fmincg (@(t)(lrCostFunction(t, X, (y == c), lambda)),initial_theta, options);
+  all_theta(c,:)=transpose(theta(:));
+  end
 
 
 
