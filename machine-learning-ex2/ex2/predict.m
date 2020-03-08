@@ -20,8 +20,6 @@ for i=1:m
   else
     p(i)=0;
   end
-
-  
 end
 
 
