@@ -24,12 +24,12 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 
 % Setup some useful variables
 m = size(X, 1);
-         
+X= [ones(m, 1) X];
+K = 10;        
 % You need to return the following variables correctly 
 J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
-
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
@@ -63,11 +63,46 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 
-
-
-
-
-
+soma =0;
+k = num_labels;
+for i=1:m
+  [hidenlayer,outputlayer]=  htheta(X(i,:),Theta1,Theta2);
+  yp = zeros(10,1);
+  value =y(i);
+  yp(value)=1;
+  for j=1:k
+    soma = soma-((yp(j).*log(outputlayer(j)))+((1-yp(j)).*(log(1-outputlayer(j)))));
+  endfor
+endfor
+soma1 = 0;
+for i=1:length(Theta1(:,1))
+  for j=2:length(Theta1(i,:))
+    soma1 = soma1+ Theta1(i,j)^2;
+  endfor
+endfor
+soma2 =0;
+for i=1:length(Theta2(:,1))
+  for j=2:length(Theta2(i,:))
+    soma2 = soma2 + Theta2(i,j)^2;
+  endfor
+endfor
+J = (soma/m)+(lambda/(2*m))*(soma1+soma2);
+deltazin1 = 0;
+deltazin2 = 0;
+detal3 =[];
+for i=1:m
+  [hidenlayer,outputlayer]=htheta(X(i,:),Theta1,Theta2);
+  yp = zeros(num_labels,1);
+  position = y(i);
+  yp(position) = 1;
+  outputlayer;
+  delta3 = outputlayer-yp;
+  delta2 = transpose(Theta2)*delta3.*(hidenlayer.*(1-hidenlayer));
+  deltazin1 = deltazin1 + delta2(2:end)*(X(i,:));
+  deltazin2 = deltazin2+ delta3*transpose(hidenlayer);
+  Theta1_grad = [(1/m)*deltazin1(:,1) (1/m)*deltazin1(:,2:end)+(lambda/m)*Theta1(:,2:end)];
+  Theta2_grad = [(1/m)*deltazin2(:,1) (1/m)*deltazin2(:,2:end)+(lambda/m)*Theta2(:,2:end)];
+end
 
 
 
@@ -86,6 +121,9 @@ Theta2_grad = zeros(size(Theta2));
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
-
+end
+function [value,output] = htheta(x,Theta1,Theta2)
+  value =sigmoid(Theta1*transpose(x));
+  value = [1;value];
+  output = sigmoid(Theta2*value); 
 end
